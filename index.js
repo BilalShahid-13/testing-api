@@ -35,15 +35,15 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 // get data
-app.get("/get", async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.status(200).json(users);
-  } catch (error) {
-    console.error("Error fetching users", error);
-    res.status(500).json({ msg: "Internal Server Error" });
-  }
-});
+// app.get("/get", async (req, res) => {
+//   try {
+//     const users = await User.find({});
+//     res.status(200).json(users);
+//   } catch (error) {
+//     console.error("Error fetching users", error);
+//     res.status(500).json({ msg: "Internal Server Error" });
+//   }
+// });
 
 // routers
 app.get("/", (req, res) => {

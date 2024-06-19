@@ -2,11 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+
 const port = process.env.PORT;
 
 // middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
 
 // connection
 mongoose
@@ -15,12 +16,30 @@ mongoose
   )
   .then(() => {
     console.log("mongodb connected");
+
+    app.listen(port, () => {
+      console.log("port is running", port);
+    });
+
+    app.get("/get:id", (res, req) => {
+      const id = res.params.id;
+      return req.status(200).send({ msg: "your id is " + id });
+    });
+
+    // routers
+    app.get("/", (req, res) => {
+      return res.status(200).send({ msg: "Home Get" });
+    });
+
+    app.get("/about", (req, res) => {
+      return res.status(200).send({ msg: "about page" });
+    });
   })
 
   .catch((e) => {
     console.log("mongodb not connected ->", e);
+    return false;
   });
-// dbConnect();
 
 // use schema
 
@@ -44,21 +63,3 @@ const User = mongoose.model("User", userSchema);
 //     res.status(500).json({ msg: "Internal Server Error" });
 //   }
 // });
-
-app.get("/get:id", (res, req) => {
-  const id = res.params.id;
-  return req.status(200).send({ msg: "your id is " + id });
-});
-
-// routers
-app.get("/", (req, res) => {
-  return res.status(200).send({ msg: "Home Get" });
-});
-
-app.get("/about", (req, res) => {
-  return res.status(200).send({ msg: "about page" });
-});
-
-app.listen(port, () => {
-  console.log("port is running", port);
-});

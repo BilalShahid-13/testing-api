@@ -22,6 +22,29 @@ mongoose
   });
 // dbConnect();
 
+// use schema
+
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  lastname: {
+    type: String,
+    required: true,
+  },
+});
+
+const User = mongoose.model("User", userSchema);
+
+// get data
+app.get("/get", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users", error);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+});
+
 // routers
 app.get("/", (req, res) => {
   return res.status(200).send({ msg: "Home Get" });

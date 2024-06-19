@@ -45,6 +45,11 @@ const User = mongoose.model("User", userSchema);
 //   }
 // });
 
+app.get("/get:id", (res, req) => {
+  const id = res.params.id;
+  return req.status(200).send({ msg: "your id is " + id });
+});
+
 // routers
 app.get("/", (req, res) => {
   return res.status(200).send({ msg: "Home Get" });

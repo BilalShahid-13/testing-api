@@ -3,63 +3,59 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
-// middleware
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-// connection
+// MongoDB connection
+const mongoURI =
+  "mongodb+srv://bcsmf21249:pvcvh38rXay3Wxl7@mernclustor.qf3zmjk.mongodb.net/MERNDB?retryWrites=true&w=majority&appName=MernClustor";
+
 mongoose
-  .connect(
-    "mongodb+srv://bcsmf21249:pvcvh38rXay3Wxl7@mernclustor.qf3zmjk.mongodb.net/MERNDB?retryWrites=true&w=majority&appName=MernClustor"
-  )
+  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log("mongodb connected");
+    console.log("MongoDB connected");
 
     app.listen(port, () => {
-      console.log("port is running", port);
+      console.log("Server is running on port", port);
     });
 
-    app.get("/get:id", (res, req) => {
-      const id = res.params.id;
-      return req.status(200).send({ msg: "your id is " + id });
+    app.get("/get:id", (req, res) => {
+      // Corrected order of parameters
+      const id = req.params.id; // Corrected parameter access
+      return res.status(200).send({ msg: "Your ID is " + id });
     });
 
-    // routers
+    // Routes
     app.get("/", (req, res) => {
       return res.status(200).send({ msg: "Home Get" });
     });
 
     app.get("/about", (req, res) => {
-      return res.status(200).send({ msg: "about page" });
+      return res.status(200).send({ msg: "About page" });
     });
   })
-
   .catch((e) => {
-    console.log("mongodb not connected ->", e);
-    return false;
+    console.error("MongoDB connection error:", e);
   });
 
-// use schema
-
+// Schema definition
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  lastname: {
-    type: String,
-    required: true,
-  },
+  lastname: { type: String, required: true },
 });
 
 const User = mongoose.model("User", userSchema);
 
-// get data
-// app.get("/get", async (req, res) => {
-//   try {
-//     const users = await User.find({});
-//     res.status(200).json(users);
-//   } catch (error) {
-//     console.error("Error fetching users", error);
-//     res.status(500).json({ msg: "Internal Server Error" });
-//   }
-// });
+// Example get data route
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users", error);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
+});

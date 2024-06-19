@@ -10,11 +10,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // MongoDB connection
-const mongoURI =
-  "mongodb+srv://bcsmf21249:pvcvh38rXay3Wxl7@mernclustor.qf3zmjk.mongodb.net/MERNDB?retryWrites=true&w=majority&appName=MernClustor";
+const mongoURI = process.env.MONGO_URI || "mongodb+srv://bcsmf21249:pvcvh38rXay3Wxl7@mernclustor.qf3zmjk.mongodb.net/MERNDB?retryWrites=true&w=majority&appName=MernClustor";
 
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoURI)
   .then(() => {
     console.log("MongoDB connected");
 
@@ -23,8 +22,7 @@ mongoose
     });
 
     app.get("/get:id", (req, res) => {
-      // Corrected order of parameters
-      const id = req.params.id; // Corrected parameter access
+      const id = req.params.id;
       return res.status(200).send({ msg: "Your ID is " + id });
     });
 
@@ -36,6 +34,7 @@ mongoose
     app.get("/about", (req, res) => {
       return res.status(200).send({ msg: "About page" });
     });
+
   })
   .catch((e) => {
     console.error("MongoDB connection error:", e);
